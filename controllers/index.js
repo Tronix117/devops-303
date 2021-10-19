@@ -22,7 +22,9 @@ try {
       );
       redis.quit();
       redis = null;
+      return;
     }
+    console.log(error);
   });
 } catch (err) {
   console.log('Redis is disable');
@@ -55,7 +57,7 @@ async function indexHandler(request) {
     redis.hincrby('perContainerSeenCount', hostname, 1),
   ]): [0,0];
 
-  const perContainerSeenCount = redis ? await redis.hgetall('perContainerSeenCount') : 0;
+  const perContainerSeenCount = redis ? (await redis.hgetall('perContainerSeenCount')) : 0;
 
   return `<html><pre>
     Hostname: ${hostname}
