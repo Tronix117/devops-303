@@ -1,5 +1,9 @@
 module.exports = {
   server: {
-    port: 8884
+    port: process.env.PORT || 8884
+  },
+  environment: process.env.NODE_ENV || 'development',
+  smtp: {
+    host: process.env.SMTP_HOST || 'localhost'
   }
 }

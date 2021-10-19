@@ -1,6 +1,6 @@
 'use strict';
 
-// HAPI est notre framework au même titre que Express.JS
+// HAPI sdjfkhgl notre framework au même titre que Express.JS
 const Hapi = require('hapi');
 
 // Path nous permet de faire des opération sur les chemins
@@ -25,4 +25,5 @@ server.route(require(path.join(__dirname, 'router')))
 server.start((err) => {
     if (err) { throw err; }
     console.log(`Server running at: ${server.info.uri}`);
+    console.log(`Environment: ${config.environment}`);
 });
