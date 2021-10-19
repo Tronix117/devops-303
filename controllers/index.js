@@ -6,13 +6,15 @@ const
 let redis = null;
 
 try {
-  redis = new Redis({
+  const redisConfig = {
     host: process.env.REDIS_HOST || '127.0.0.1',
     db: process.env.REDIS_DB || 1,
     port: process.env.REDIS_PORT || 6380,
     username: process.env.REDIS_USERNAME,
     password: process.env.REDIS_PASSWORD,
-  });
+  }
+  console.log(`je me connecte sur ${redisConfig.host}:${redisConfig.port}`);
+  redis = new Redis(redisConfig);
 
   redis.on("error", (error) => {
     if (error.code === 'ECONNREFUSED') {
