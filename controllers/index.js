@@ -3,13 +3,20 @@ const
   os = require('os'),
   Redis = require('ioredis');
 
-const redis = new Redis({
-  host: process.env.REDIS_HOST || '127.0.0.1',
-  db: process.env.REDIS_DB || 1,
-  port: process.env.REDIS_PORT || 6379,
-  username: process.env.REDIS_USERNAME,
-  password: process.env.REDIS_PASSWORD,
-});
+let redis = null;
+
+try {
+  redis = new Redis({
+    host: process.env.REDIS_HOST || '127.0.0.1',
+    db: process.env.REDIS_DB || 1,
+    port: process.env.REDIS_PORT || 6379,
+    username: process.env.REDIS_USERNAME,
+    password: process.env.REDIS_PASSWORD,
+  });
+} catch (err) {
+  console.log('Redis is disable');
+  console.log(err.message);
+}
 
 let
   ipAdress = null,
@@ -32,12 +39,12 @@ module.exports = async function(request, reply){
 async function indexHandler(request) {
   seen++;
 
-  const [totalSeen, ownSeenCount] = await Promise.all([
+  const [totalSeen, ownSeenCount] = redis ? await Promise.all([
     redis.incr('totalSeenCount'),
-    redis.hincrby('perContainerSeenCount', hostname, 1)
-  ]);
+    redis.hincrby('perContainerSeenCount', hostname, 1),
+  ]): [0,0];
 
-  const perContainerSeenCount = await redis.hgetall('perContainerSeenCount');
+  const perContainerSeenCount = redis ? await redis.hgetall('perContainerSeenCount') : 0;
 
   return `<html><pre>
     Hostname: ${hostname}
