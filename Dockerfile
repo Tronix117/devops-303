@@ -1,11 +1,11 @@
 # Image de base
 FROM node:14-alpine
 
-# Changer le répertoire de travail (le créé si non existant)
+# Changer le répertoire de travail
 WORKDIR /app
 
 # Installe les dépendences
-COPY package.json .
+COPY package.json /app/
 RUN npm install
 
 # Copie des fichiers du projet dans l'image
