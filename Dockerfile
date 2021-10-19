@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Installe les dépendences
 COPY package.json /app/
-RUN npm install
+RUN npm install && npm install -g nodemon
 
 # Copie des fichiers du projet dans l'image
 COPY . .

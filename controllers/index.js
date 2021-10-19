@@ -62,6 +62,8 @@ async function indexHandler(request) {
   const perContainerSeenCount = redis ? (await redis.hgetall('perContainerSeenCount')) : 0;
 
   return `<html><pre>
+    Hello everybody !!
+    ---
     Hostname: ${hostname}
     Server IP: ${ipAdress}
     ---

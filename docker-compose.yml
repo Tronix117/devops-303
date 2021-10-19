@@ -1,11 +1,30 @@
 version: '3'
 services:
   app:
+    # En lieu et place du nom d'une image, on indique au docker-compose de builder l'image préalablement au démarrage. En utilisant le dossier actuel `.` comme contexte pour le build
     build: .
+
+    # On ouvre un port entre l'hôte et le container
     ports:
       - "65200:8884"
+
+    # On défini des variables d'environnements qui seront lues par le projet, à voir les variables d'environnement qui sont utilisées par le projet
     environment:
       - REDIS_HOST=redis-db
       - REDIS_PORT=6379
+
+    volumes:
+      # On bind le dossier actuel (le projet) avec `/app` dans le container, pour remplacer le contenu statifié de l'image par un lien vers notre projet sur la machine Hôte => ainsi chaque changement effectué sur notre projet en local, sera aussi reflété dans le container
+      - .:/app
+
+      # Pour éviter que les node_modules de l'image soient écrasé par le bind précédent, on spécifie un volume "sans montage", qui permet d'indiquer qu'il faudra utiliser le contenu de l'image à cet endroit là
+      - /app/node_modules
+
+    # On surcharge la CMD du Dockerfile, pour utiliser nodemon à la place de node => nodemon recharge automatiquement le serveur node quand des fichiers sont modifiés
+    # le -L est là pour une raison de compatibilité avec WSL
+    command: ["nodemon", "-L", "app.js"]
+  
+  # Le container redis
   redis-db:
+    # on utilise l'image officielle existante sur le dockerhub, dans sa version "light" alpine
     image: redis:alpine
