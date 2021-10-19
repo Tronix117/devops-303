@@ -9,9 +9,20 @@ try {
   redis = new Redis({
     host: process.env.REDIS_HOST || '127.0.0.1',
     db: process.env.REDIS_DB || 1,
-    port: process.env.REDIS_PORT || 6379,
+    port: process.env.REDIS_PORT || 6380,
     username: process.env.REDIS_USERNAME,
     password: process.env.REDIS_PASSWORD,
+  });
+
+  redis.on("error", (error) => {
+    if (error.code === 'ECONNREFUSED') {
+      console.error(
+        '\x1b[5m\x1b[37m\x1b[41m%s\x1b[0m',
+        "⚠ Impossible de se connecter à redis, avez-vous lancé une instance de redis ?",
+      );
+      redis.quit();
+      redis = null;
+    }
   });
 } catch (err) {
   console.log('Redis is disable');
